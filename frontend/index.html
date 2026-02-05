@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaZoom</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-box">
+        <div class="logo-section">
+          <h1 class="logo">JavaZoom</h1>
+          <p class="tagline">JavaZoom 실시간 회의 보안 필터링</p>
+        </div>
+
+        <form class="login-form" id="loginForm">
+          <div class="form-group">
+            <input
+              type="email"
+              id="email"
+              class="input-field"
+              placeholder="이메일"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="password"
+              id="password"
+              class="input-field"
+              placeholder="비밀번호"
+              required
+            />
+          </div>
+
+          <div class="form-options">
+            <label class="remember-me">
+              <input type="checkbox" id="rememberMe" />
+              <span>로그인 유지</span>
+            </label>
+            <a href="#" class="forgot-password">비밀번호 찾기</a>
+          </div>
+
+          <button type="submit" class="login-button">로그인</button>
+        </form>
+
+        <div class="signup-section">
+          <p>
+            아직 계정이 없으신가요? <a href="#" class="signup-link">회원가입</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

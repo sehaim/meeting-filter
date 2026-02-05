@@ -1,0 +1,120 @@
+# =========================
+# OS / Editor
+# =========================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.log
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Python / FastAPI
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.cache/
+.ipynb_checkpoints/
+
+# Virtualenv
+.venv/
+venv/
+env/
+ENV/
+
+# FastAPI / Uvicorn
+*.pid
+*.sock
+
+# =========================
+# Node / Frontend tooling (if any)
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+bun.lockb
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs (Vite / CRA / 기타)
+dist/
+build/
+out/
+.vite/
+.cache/
+
+# =========================
+# Audio / Media artifacts (demo recordings, temp)
+# =========================
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.ogg
+*.flac
+*.webm
+*.mp4
+*.mov
+*.mkv
+*.avi
+
+# =========================
+# Model / Cache (whisper / huggingface / torch etc.)
+# =========================
+.cache/
+.hf_cache/
+huggingface/
+**/.huggingface/
+**/.cache/huggingface/
+**/.cache/torch/
+**/.cache/whisper/
+**/.cache/openai/
+
+# =========================
+# Runtime data
+# =========================
+tmp/
+temp/
+logs/
+data/
+storage/
+uploads/
+recordings/
+outputs/
+
+# =========================
+# Misc
+# =========================
+*.sqlite
+*.sqlite3
+*.db

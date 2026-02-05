@@ -1,0 +1,534 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  background: #f8f9fa;
+  color: #333;
+  padding: 20px;
+}
+
+.report-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ===== 툴바 ===== */
+.report-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 12px;
+}
+
+.btn-back {
+  background: white;
+  border: 1px solid #e0e0e0;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #333;
+}
+
+.btn-back:hover {
+  background: #f5f5f5;
+  border-color: #d0d0d0;
+}
+
+.report-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-print,
+.btn-download {
+  background: linear-gradient(135deg, #1f8ce6 0%, #1670c6 100%);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-print i,
+.btn-download i {
+  margin-right: 6px;
+  font-size: 16px;
+  vertical-align: -2px;
+}
+
+.btn-print:hover,
+.btn-download:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(31, 140, 230, 0.3);
+}
+
+/* ===== 보고서 콘텐츠 ===== */
+.report-content {
+  background: white;
+  border-radius: 12px;
+  padding: 48px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.report-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.report-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #1f8ce6;
+}
+
+.report-generated {
+  font-size: 13px;
+  color: #999;
+}
+
+/* ===== 섹션 ===== */
+.report-section {
+  margin-bottom: 40px;
+}
+
+.report-section h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #333;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #1f8ce6;
+}
+
+.report-section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #555;
+}
+
+/* ===== 정보 그리드 ===== */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.info-item {
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.info-item label {
+  display: block;
+  font-size: 12px;
+  color: #999;
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-item p {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* ===== 보안 요약 ===== */
+.security-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.security-stat {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  gap: 12px;
+}
+
+.security-stat.safe {
+  background: #e8f7f0;
+  border-left: 4px solid #00b894;
+}
+
+.security-stat.alert {
+  background: #ffe8e8;
+  border-left: 4px solid #ff6b6b;
+}
+
+.security-stat.warning {
+  background: #fff5e6;
+  border-left: 4px solid #ffa940;
+}
+
+.stat-icon {
+  font-size: 28px;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* ===== 민감 내용 ===== */
+.sensitive-content {
+  margin-top: 20px;
+}
+
+.content-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.content-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f8f9fa;
+  border-left: 4px solid #e0e0e0;
+}
+
+.content-item.alert-level {
+  background: #ffe8e8;
+  border-left-color: #ff6b6b;
+}
+
+.content-item.warning-level {
+  background: #fff5e6;
+  border-left-color: #ffa940;
+}
+
+.time-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f8ce6;
+  min-width: 40px;
+  text-align: center;
+  padding: 4px 8px;
+  background: white;
+  border-radius: 4px;
+}
+
+.content-body {
+  flex: 1;
+}
+
+.speaker {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.message {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.reason {
+  font-size: 11px;
+  color: #999;
+  font-style: italic;
+}
+
+.action-badge {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.action-badge.blocked {
+  background: #ff6b6b;
+  color: white;
+}
+
+.action-badge.warned {
+  background: #ffa940;
+  color: white;
+}
+
+/* ===== 요약 콘텐츠 ===== */
+.summary-content {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.summary-list {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-list li {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.decision-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.decision-item {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #555;
+  gap: 8px;
+}
+
+.decision-icon {
+  width: 24px;
+  height: 24px;
+  background: #00b894;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* ===== 참가자 명단 ===== */
+.participants-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.participant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.participant-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 13px;
+}
+
+.participant-role {
+  font-size: 11px;
+  color: #999;
+  background: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.participant-status {
+  font-size: 11px;
+  font-weight: 600;
+  color: #00b894;
+}
+
+/* ===== 액션 아이템 ===== */
+.action-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-item {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #1f8ce6;
+}
+
+.action-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.action-id {
+  font-weight: 700;
+  color: #1f8ce6;
+  font-size: 12px;
+}
+
+.action-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.action-status.pending {
+  background: #fff5e6;
+  color: #ffa940;
+}
+
+.action-task {
+  font-weight: 600;
+  color: #333;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.action-owner,
+.action-deadline {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+/* ===== 권장사항 ===== */
+.recommendations {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recommendation-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: #e8f7f0;
+  border-radius: 8px;
+}
+
+.rec-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.rec-content h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.rec-content p {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* ===== 풋터 ===== */
+.report-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+  text-align: center;
+}
+
+.report-footer p {
+  font-size: 11px;
+  color: #999;
+  margin-bottom: 4px;
+}
+
+/* ===== 인쇄 스타일 ===== */
+@media print {
+  body {
+    background: white;
+    padding: 0;
+  }
+
+  .report-toolbar {
+    display: none;
+  }
+
+  .report-content {
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .report-section {
+    page-break-inside: avoid;
+  }
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 768px) {
+  body {
+    padding: 12px;
+  }
+
+  .report-content {
+    padding: 24px;
+  }
+
+  .report-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-back,
+  .btn-print,
+  .btn-download {
+    width: 100%;
+  }
+
+  .report-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .security-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .participants-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>홈 - JavaZoom</title>
+    <link rel="stylesheet" href="dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- 헤더 -->
+      <header class="dashboard-header">
+        <div class="header-left">
+          <h1 class="app-logo">JavaZoom</h1>
+        </div>
+        <div class="header-right">
+          <div class="user-profile">
+            <div class="user-avatar">JY</div>
+            <div class="user-info">
+              <p class="user-name" id="userName">김진영</p>
+              <p class="user-email" id="userEmail">jinyoung@example.com</p>
+            </div>
+            <button class="logout-btn" id="logoutBtn">로그아웃</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- 메인 콘텐츠 -->
+      <main class="dashboard-main">
+        <!-- 빠른 작업 섹션 -->
+        <section class="quick-actions">
+          <div class="action-card" id="joinMeetingCard">
+            <div class="action-icon"><i class="ri-phone-line"></i></div>
+            <h3>회의 참가하기</h3>
+            <p>회의 코드를 입력하여 진행 중인 회의에 참가합니다</p>
+            <button class="action-button">참가하기</button>
+          </div>
+
+          <div class="action-card" id="scheduleMeetingCard">
+            <div class="action-icon"><i class="ri-calendar-line"></i></div>
+            <h3>회의 예약하기</h3>
+            <p>새로운 회의를 예약하고 팀원을 초대합니다</p>
+            <button class="action-button">예약하기</button>
+          </div>
+
+          <div class="action-card" id="createMeetingCard">
+            <div class="action-icon"><i class="ri-add-line"></i></div>
+            <h3>회의 생성하기</h3>
+            <p>지금 바로 새로운 회의를 시작합니다</p>
+            <button class="action-button">생성하기</button>
+          </div>
+        </section>
+
+        <!-- 캘린더 섹션 -->
+        <section class="calendar-section">
+          <div class="calendar-header">
+            <h2>회의 일정</h2>
+            <div class="calendar-nav">
+              <button class="nav-btn" id="prevMonthBtn">◀</button>
+              <span id="currentMonth"></span>
+              <button class="nav-btn" id="nextMonthBtn">▶</button>
+            </div>
+          </div>
+
+          <div class="calendar-container">
+            <div class="calendar-weekdays">
+              <div class="weekday">일</div>
+              <div class="weekday">월</div>
+              <div class="weekday">화</div>
+              <div class="weekday">수</div>
+              <div class="weekday">목</div>
+              <div class="weekday">금</div>
+              <div class="weekday">토</div>
+            </div>
+            <div class="calendar-days" id="calendarDays"></div>
+          </div>
+
+          <!-- 선택된 날짜의 회의 목록 -->
+          <div class="meetings-list">
+            <h3 id="selectedDateTitle">오늘의 회의</h3>
+            <div class="meetings-container" id="meetingsContainer">
+              <div class="meeting-item">
+                <div class="meeting-time">10:00 - 11:00</div>
+                <div class="meeting-details">
+                  <h4>분기별 전략 회의</h4>
+                  <p>회의실 A · 참가자 5명</p>
+                </div>
+                <button class="join-meeting-btn">참가</button>
+              </div>
+
+              <div class="meeting-item">
+                <div class="meeting-time">14:00 - 15:00</div>
+                <div class="meeting-details">
+                  <h4>프로젝트 진행 현황</h4>
+                  <p>회의실 B · 참가자 3명</p>
+                </div>
+                <button class="join-meeting-btn">참가</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 최근 회의 보고서 섹션 -->
+        <section class="recent-reports">
+          <div class="section-header">
+            <h2>최근 회의 보고서</h2>
+            <div class="reports-nav">
+              <button class="carousel-btn" id="carouselPrev">◀</button>
+              <button class="carousel-btn" id="carouselNext">▶</button>
+            </div>
+          </div>
+
+          <div class="reports-carousel">
+            <div class="carousel-container">
+              <div class="carousel-track" id="carouselTrack">
+                <div class="report-card carousel-slide" data-report-id="1">
+                  <div class="report-header">
+                    <div class="report-date">2026-02-02</div>
+                    <h3 class="report-title">분기별 전략 회의</h3>
+                  </div>
+
+                  <div class="report-info-grid">
+                    <div class="info-item">
+                      <span class="info-label">회의 시간</span>
+                      <span class="info-value">1시간 15분</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">시작 시간</span>
+                      <span class="info-value">10:00 - 11:15</span>
+                    </div>
+                  </div>
+
+                  <div class="report-info-grid">
+                    <div class="info-item">
+                      <span class="info-label">장소</span>
+                      <span class="info-value">회의실 A</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">참가자</span>
+                      <span class="info-value">5명</span>
+                    </div>
+                  </div>
+
+                  <div class="report-stats-grid">
+                    <div class="stat-item safe">
+                      <span class="stat-label">안전도</span>
+                      <span class="stat-value">98%</span>
+                    </div>
+                    <div class="stat-item alert">
+                      <span class="stat-label">민감 정보</span>
+                      <span class="stat-value">2건</span>
+                    </div>
+                  </div>
+
+                  <div class="report-participants">
+                    <span class="info-label">참가자 명단</span>
+                    <div class="participants-list">
+                      <span>김진영</span>
+                      <span>이수현</span>
+                      <span>박준호</span>
+                      <span>최민지</span>
+                      <span>이준호</span>
+                    </div>
+                  </div>
+
+                  <div class="report-summary">
+                    <span class="info-label">회의 요약</span>
+                    <p>
+                      분기별 사업 전략을 논의하고 마케팅 계획을 수립했습니다.
+                      다음 분기 목표와 실행 계획이 확정되었습니다.
+                    </p>
+                  </div>
+
+                  <button class="report-button" data-report-id="1">
+                    상세 보고서 보기
+                  </button>
+                </div>
+
+                <div class="report-card carousel-slide" data-report-id="2">
+                  <div class="report-header">
+                    <div class="report-date">2026-02-01</div>
+                    <h3 class="report-title">팀 미팅</h3>
+                  </div>
+
+                  <div class="report-info-grid">
+                    <div class="info-item">
+                      <span class="info-label">회의 시간</span>
+                      <span class="info-value">45분</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">시작 시간</span>
+                      <span class="info-value">14:00 - 14:45</span>
+                    </div>
+                  </div>
+
+                  <div class="report-info-grid">
+                    <div class="info-item">
+                      <span class="info-label">장소</span>
+                      <span class="info-value">회의실 B</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">참가자</span>
+                      <span class="info-value">3명</span>
+                    </div>
+                  </div>
+
+                  <div class="report-stats-grid">
+                    <div class="stat-item safe">
+                      <span class="stat-label">안전도</span>
+                      <span class="stat-value">100%</span>
+                    </div>
+                    <div class="stat-item safe">
+                      <span class="stat-label">민감 정보</span>
+                      <span class="stat-value">0건</span>
+                    </div>
+                  </div>
+
+                  <div class="report-participants">
+                    <span class="info-label">참가자 명단</span>
+                    <div class="participants-list">
+                      <span>김진영</span>
+                      <span>이수현</span>
+                      <span>박준호</span>
+                    </div>
+                  </div>
+
+                  <div class="report-summary">
+                    <span class="info-label">회의 요약</span>
+                    <p>
+                      팀의 주간 업무 일정을 논의하고 프로젝트 진행 상황을
+                      공유했습니다. 특별한 이슈 사항 없음.
+                    </p>
+                  </div>
+
+                  <button class="report-button" data-report-id="2">
+                    상세 보고서 보기
+                  </button>
+                </div>
+
+                <div class="report-card carousel-slide" data-report-id="3">
+                  <div class="report-header">
+                    <div class="report-date">2026-01-31</div>
+                    <h3 class="report-title">클라이언트 회의</h3>
+                  </div>
+
+                  <div class="report-info-grid">
+                    <div class="info-item">
+                      <span class="info-label">회의 시간</span>
+                      <span class="info-value">2시간</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">시작 시간</span>
+                      <span class="info-value">09:00 - 11:00</span>
+                    </div>
+                  </div>
+
+                  <div class="report-info-grid">
+                    <div class="info-item">
+                      <span class="info-label">장소</span>
+                      <span class="info-value">회의실 C</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">참가자</span>
+                      <span class="info-value">4명</span>
+                    </div>
+                  </div>
+
+                  <div class="report-stats-grid">
+                    <div class="stat-item safe">
+                      <span class="stat-label">안전도</span>
+                      <span class="stat-value">99%</span>
+                    </div>
+                    <div class="stat-item warning">
+                      <span class="stat-label">민감 정보</span>
+                      <span class="stat-value">1건</span>
+                    </div>
+                  </div>
+
+                  <div class="report-participants">
+                    <span class="info-label">참가자 명단</span>
+                    <div class="participants-list">
+                      <span>김진영</span>
+                      <span>이수현</span>
+                      <span>박준호</span>
+                      <span>한정우</span>
+                    </div>
+                  </div>
+
+                  <div class="report-summary">
+                    <span class="info-label">회의 요약</span>
+                    <p>
+                      신규 프로젝트 계약 사항을 논의하고 프로젝트 일정을
+                      확정했습니다. 클라이언트 만족도 높음.
+                    </p>
+                  </div>
+
+                  <button class="report-button" data-report-id="3">
+                    상세 보고서 보기
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-indicators" id="carouselIndicators">
+            <span class="indicator active" data-slide="0"></span>
+            <span class="indicator" data-slide="1"></span>
+            <span class="indicator" data-slide="2"></span>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- 회의 화면 (참가 시 표시) -->
+    <div class="meeting-screen" id="meetingScreen">
+      <header class="meeting-topbar">
+        <div class="meeting-title" id="meetingTitleText">회의 진행 중</div>
+        <div class="meeting-actions">
+          <button class="meeting-leave-btn" id="leaveMeetingBtn">나가기</button>
+        </div>
+      </header>
+
+      <div class="meeting-layout">
+        <aside class="meeting-sidebar">
+          <h3>사이드바</h3>
+          <p>대화 캡처 및 보안 필터링 상태</p>
+          <div class="record-indicator">
+            <span class="record-dot"></span>
+            녹화 중
+          </div>
+          <div class="participant-list">
+            <h4>참가자</h4>
+            <ul>
+              <li>김진영 (나)</li>
+              <li>이수현</li>
+              <li>박준호</li>
+              <li>최민지</li>
+            </ul>
+          </div>
+        </aside>
+
+        <section class="meeting-main">
+          <div class="meeting-video">
+            <div class="meeting-video-main is-off" id="meetingVideoMain">
+              <video id="localVideo" autoplay playsinline muted></video>
+              <div class="video-off-overlay" id="videoOffOverlay">
+                카메라 권한을 허용해주세요.
+              </div>
+              <div class="meeting-video-controls">
+                <button class="control-btn" id="btnMic">
+                  <i class="ri-mic-line"></i>
+                </button>
+                <button class="control-btn" id="cameraToggleBtn">
+                  <i class="ri-camera-line"></i>
+                </button>
+              </div>
+            </div>
+            <div class="meeting-remote-list">
+              <div class="remote-tile">
+                <img src="인물1.png" alt="상대 화면 이수현" />
+              </div>
+              <div class="remote-tile">
+                <img src="인물2.png" alt="상대 화면 박준호" />
+              </div>
+              <div class="remote-tile">
+                <img src="인물3.png" alt="상대 화면 최민지" />
+              </div>
+            </div>
+          </div>
+
+          <div class="meeting-transcript" style="display: none">
+            <h4>회의록 텍스트 기록</h4>
+            <div class="transcript-body">
+              지금 대화 내용을 분석하고 있어요. 중요한 키워드를 자동으로
+              정리합니다.
+            </div>
+          </div>
+        </section>
+
+        <aside class="meeting-glossary">
+          <h3>전문용어 사전</h3>
+          <div class="glossary-feed" id="glossaryFeed">
+            <div class="glossary-item muted">
+              대화를 분석 중입니다. 약 10초 후 용어가 표시됩니다.
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- 회의 참가 모달 -->
+    <div class="modal" id="joinModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>회의 참가하기</h2>
+          <button class="modal-close" id="joinModalClose">✕</button>
+        </div>
+        <div class="modal-body">
+          <input
+            type="text"
+            id="meetingCode"
+            class="input-field"
+            placeholder="회의 코드를 입력하세요"
+          />
+          <small>예: ABC-123-XYZ</small>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" id="joinModalCancel">취소</button>
+          <button class="btn-primary" id="joinModalConfirm">참가하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D 지구본 애니메이션 오버레이 -->
+    <div class="globe-overlay" id="globeOverlay">
+      <div class="globe-container">
+        <div class="globe">
+          <div class="globe-sphere">
+            <div class="continents">
+              <div class="continent continent-1"></div>
+              <div class="continent continent-2"></div>
+              <div class="continent continent-3"></div>
+              <div class="continent continent-4"></div>
+              <div class="continent continent-5"></div>
+            </div>
+            <div class="latitude-lines">
+              <div class="lat-line"></div>
+              <div class="lat-line"></div>
+              <div class="lat-line"></div>
+              <div class="lat-line"></div>
+            </div>
+            <div class="longitude-lines">
+              <div class="long-line"></div>
+              <div class="long-line"></div>
+              <div class="long-line"></div>
+              <div class="long-line"></div>
+            </div>
+          </div>
+          <div class="globe-glow"></div>
+          <div class="connection-dots">
+            <div class="dot dot-1"></div>
+            <div class="dot dot-2"></div>
+            <div class="dot dot-3"></div>
+            <div class="dot dot-4"></div>
+            <div class="dot dot-5"></div>
+          </div>
+        </div>
+        <p class="globe-text">회의에 연결 중...</p>
+      </div>
+    </div>
+
+    <!-- 회의 생성 모달 -->
+    <div class="modal" id="createModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>회의 생성하기</h2>
+          <button class="modal-close" id="createModalClose">✕</button>
+        </div>
+        <div class="modal-body">
+          <input
+            type="text"
+            id="meetingTitle"
+            class="input-field"
+            placeholder="회의 제목"
+          />
+          <textarea
+            id="meetingDesc"
+            class="input-field"
+            placeholder="회의 설명 (선택사항)"
+            rows="3"
+          ></textarea>
+          <input
+            type="number"
+            id="meetingDuration"
+            class="input-field"
+            placeholder="회의 예상 시간 (분)"
+            min="15"
+            max="480"
+            value="60"
+          />
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" id="createModalCancel">취소</button>
+          <button class="btn-primary" id="createModalConfirm">생성하기</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+  </body>
+</html>

@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Meeting Filter Demo (Mic → STT → Bleep → Play)</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        padding: 16px;
+        max-width: 980px;
+        margin: 0 auto;
+      }
+      button {
+        padding: 10px 12px;
+        margin-right: 8px;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      #log {
+        white-space: pre-wrap;
+        background: #f6f6f6;
+        padding: 12px;
+        border-radius: 8px;
+        min-height: 200px;
+      }
+      code {
+        background: #f0f0f0;
+        padding: 2px 4px;
+        border-radius: 6px;
+      }
+      .pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #eee;
+        margin-right: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>실시간 회의 필터링 데모</h1>
+    <p>마이크 → 서버 STT → 민감 단어 구간 삑 처리 → 마스킹된 오디오 재생</p>
+
+    <div class="row">
+      <button id="btnStart">시작</button>
+      <button id="btnStop" disabled>중지</button>
+      <span class="pill">WS: <code id="wsStatus">DISCONNECTED</code></span>
+      <span class="pill">Mic: <code id="micStatus">OFF</code></span>
+      <span class="pill">PlayQ: <code id="qStatus">0</code></span>
+    </div>
+
+    <p>
+      서버 WebSocket: <code>ws://localhost:8000/ws/meeting</code><br />
+      권장: <code>python3 -m http.server 5173</code>로 열기
+    </p>
+
+    <h3>최근 결과(JSON)</h3>
+    <div id="log"></div>
+
+    <script>
+      (() => {
+        const WS_URL = "ws://localhost:8000/ws/meeting";
+
+        // 서버/클라 오디오 규격 (서버 설정과 맞춰야 함)
+        const TARGET_SR = 16000;
+        const FRAME_MS = 20;
+        const FRAME_SAMPLES = (TARGET_SR * FRAME_MS) / 1000; // 320
+
+        const btnStart = document.getElementById("btnStart");
+        const btnStop = document.getElementById("btnStop");
+        const wsStatus = document.getElementById("wsStatus");
+        const micStatus = document.getElementById("micStatus");
+        const qStatus = document.getElementById("qStatus");
+        const logEl = document.getElementById("log");
+
+        let ws = null;
+
+        // mic capture
+        let micCtx = null;
+        let source = null;
+        let processor = null;
+        let stream = null;
+
+        // playback
+        let playCtx = null;
+        let nextPlayTime = 0;
+        let queuedChunks = 0;
+
+        function setWsStatus(s) {
+          wsStatus.textContent = s;
+        }
+        function setMicStatus(s) {
+          micStatus.textContent = s;
+        }
+        function setQ(n) {
+          qStatus.textContent = String(n);
+        }
+
+        function appendLog(obj) {
+          logEl.textContent = JSON.stringify(obj, null, 2);
+        }
+
+        // ----------- Audio utils -----------
+        function downsampleBuffer(buffer, inputSampleRate, outputSampleRate) {
+          if (outputSampleRate === inputSampleRate) return buffer;
+          const sampleRateRatio = inputSampleRate / outputSampleRate;
+          const newLength = Math.round(buffer.length / sampleRateRatio);
+          const result = new Float32Array(newLength);
+          let offsetResult = 0;
+          let offsetBuffer = 0;
+          while (offsetResult < result.length) {
+            const nextOffsetBuffer = Math.round(
+              (offsetResult + 1) * sampleRateRatio,
+            );
+            let accum = 0,
+              count = 0;
+            for (
+              let i = offsetBuffer;
+              i < nextOffsetBuffer && i < buffer.length;
+              i++
+            ) {
+              accum += buffer[i];
+              count++;
+            }
+            result[offsetResult] = accum / count;
+            offsetResult++;
+            offsetBuffer = nextOffsetBuffer;
+          }
+          return result;
+        }
+
+        function floatTo16BitPCM(float32) {
+          const out = new Int16Array(float32.length);
+          for (let i = 0; i < float32.length; i++) {
+            let s = Math.max(-1, Math.min(1, float32[i]));
+            out[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+          }
+          return out;
+        }
+
+        function pcm16ToFloat32(arrayBuffer) {
+          const i16 = new Int16Array(arrayBuffer);
+          const f32 = new Float32Array(i16.length);
+          for (let i = 0; i < i16.length; i++) f32[i] = i16[i] / 32768.0;
+          return f32;
+        }
+
+        function schedulePcmPlayback(pcmArrayBuffer) {
+          if (!playCtx) return;
+
+          const samples = pcm16ToFloat32(pcmArrayBuffer);
+          const audioBuffer = playCtx.createBuffer(
+            1,
+            samples.length,
+            TARGET_SR,
+          );
+          audioBuffer.copyToChannel(samples, 0);
+
+          const src = playCtx.createBufferSource();
+          src.buffer = audioBuffer;
+          src.connect(playCtx.destination);
+
+          // 처음엔 약간의 안전버퍼를 깔아 끊김 방지
+          const now = playCtx.currentTime;
+          const SAFETY_DELAY = 0.6; // 600ms부터 시작 (필요하면 0.5~0.8까지)
+          if (nextPlayTime < now + SAFETY_DELAY)
+            nextPlayTime = now + SAFETY_DELAY;
+
+          src.start(nextPlayTime);
+          nextPlayTime += audioBuffer.duration;
+
+          queuedChunks++;
+          setQ(queuedChunks);
+
+          src.onended = () => {
+            queuedChunks = Math.max(0, queuedChunks - 1);
+            setQ(queuedChunks);
+          };
+        }
+
+        function flushOneChunkIfReady() {
+          // 1개 늦게 재생: 최소 2개는 쌓여야 1개를 틀기 시작
+          if (audioQueue.length < 2) return;
+
+          const pcm = audioQueue.shift();
+          schedulePcmPlayback(pcm);
+
+          // 오디오와 같은 순서로 들어온 메타가 있으면 같이 표시
+          const meta = metaQueue.shift();
+          if (meta) appendLog(meta);
+        }
+
+        // ----------- Start/Stop -----------
+        async function start() {
+          btnStart.disabled = true;
+
+          // WS
+          ws = new WebSocket(WS_URL);
+          ws.binaryType = "arraybuffer";
+          ws.onopen = () => setWsStatus("CONNECTED");
+          ws.onclose = () => setWsStatus("DISCONNECTED");
+          ws.onerror = () => setWsStatus("ERROR");
+
+          ws.onmessage = (ev) => {
+            if (typeof ev.data === "string") {
+              try {
+                appendLog(JSON.parse(ev.data));
+              } catch {}
+            } else {
+              schedulePcmPlayback(ev.data);
+            }
+          };
+
+          // WS connect wait
+          await new Promise((resolve) => {
+            const t = setInterval(() => {
+              if (ws && ws.readyState === 1) {
+                clearInterval(t);
+                resolve();
+              }
+            }, 50);
+          });
+
+          // play AudioContext (재생 전용)
+          playCtx = new (window.AudioContext || window.webkitAudioContext)({
+            sampleRate: TARGET_SR,
+          });
+          nextPlayTime = playCtx.currentTime + 0.35;
+
+          // mic AudioContext (캡처 전용)
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true,
+            },
+          });
+          setMicStatus("ON");
+
+          micCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const inputSR = micCtx.sampleRate;
+
+          source = micCtx.createMediaStreamSource(stream);
+
+          // 최소 데모: ScriptProcessor 사용
+          const bufferSize = 4096;
+          processor = micCtx.createScriptProcessor(bufferSize, 1, 1);
+
+          let carry = new Float32Array(0);
+
+          processor.onaudioprocess = (e) => {
+            if (!ws || ws.readyState !== 1) return;
+
+            const input = e.inputBuffer.getChannelData(0);
+            const down = downsampleBuffer(input, inputSR, TARGET_SR);
+
+            const merged = new Float32Array(carry.length + down.length);
+            merged.set(carry, 0);
+            merged.set(down, carry.length);
+
+            let offset = 0;
+            while (offset + FRAME_SAMPLES <= merged.length) {
+              const frame = merged.slice(offset, offset + FRAME_SAMPLES);
+              const pcm16 = floatTo16BitPCM(frame);
+              ws.send(pcm16.buffer);
+              offset += FRAME_SAMPLES;
+            }
+            carry = merged.slice(offset);
+          };
+
+          const zeroGain = micCtx.createGain();
+          zeroGain.gain.value = 0;
+
+          source.connect(processor);
+          processor.connect(zeroGain);
+          zeroGain.connect(micCtx.destination);
+
+          btnStop.disabled = false;
+        }
+
+        async function stop() {
+          btnStop.disabled = true;
+
+          try {
+            if (processor) processor.disconnect();
+          } catch {}
+          try {
+            if (source) source.disconnect();
+          } catch {}
+          try {
+            if (micCtx) await micCtx.close();
+          } catch {}
+          try {
+            if (stream) stream.getTracks().forEach((t) => t.stop());
+          } catch {}
+
+          try {
+            if (ws) ws.close();
+          } catch {}
+
+          try {
+            if (playCtx) await playCtx.close();
+          } catch {}
+          ws = null;
+          micCtx = null;
+          source = null;
+          processor = null;
+          stream = null;
+          playCtx = null;
+          nextPlayTime = 0;
+          queuedChunks = 0;
+          setQ(0);
+
+          setMicStatus("OFF");
+          setWsStatus("DISCONNECTED");
+          btnStart.disabled = false;
+        }
+
+        btnStart.addEventListener("click", () =>
+          start().catch((err) => {
+            console.error(err);
+            appendLog({ error: String(err) });
+            btnStart.disabled = false;
+          }),
+        );
+
+        btnStop.addEventListener("click", () => stop().catch(console.error));
+      })();
+    </script>
+  </body>
+</html>

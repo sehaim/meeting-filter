@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회의 보고서 - JavaZoom</title>
+    <link rel="stylesheet" href="report.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
+    />
+  </head>
+  <body>
+    <div class="report-container">
+      <div class="report-toolbar">
+        <button class="btn-back" id="backBtn">← 돌아가기</button>
+        <div class="report-actions">
+          <button class="btn-print" id="printBtn">
+            <i class="ri-printer-line"></i> 인쇄
+          </button>
+          <button class="btn-download" id="downloadBtn">
+            <i class="ri-download-2-line"></i> PDF 다운로드
+          </button>
+        </div>
+      </div>
+
+      <div class="report-content" id="reportContent">
+        <!-- 헤더 -->
+        <div class="report-header">
+          <h1>JavaZoom 회의 보고서</h1>
+          <p class="report-generated">
+            생성일: <span id="generatedDate"></span>
+          </p>
+        </div>
+
+        <!-- 회의 정보 -->
+        <section class="report-section">
+          <h2>회의 기본 정보</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>회의명</label>
+              <p id="meetingTitle">분기별 전략 회의</p>
+            </div>
+            <div class="info-item">
+              <label>날짜</label>
+              <p id="meetingDate">2026년 2월 2일</p>
+            </div>
+            <div class="info-item">
+              <label>시간</label>
+              <p id="meetingTime">10:00 - 11:15</p>
+            </div>
+            <div class="info-item">
+              <label>진행 시간</label>
+              <p id="meetingDuration">1시간 15분</p>
+            </div>
+            <div class="info-item">
+              <label>참가자</label>
+              <p id="participants">5명</p>
+            </div>
+            <div class="info-item">
+              <label>장소</label>
+              <p id="location">회의실 A</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 보안 분석 결과 -->
+        <section class="report-section">
+          <h2>보안 필터링 결과</h2>
+
+          <div class="security-summary">
+            <div class="security-stat safe">
+              <div class="stat-icon"><i class="ri-shield-check-line"></i></div>
+              <div class="stat-content">
+                <div class="stat-value">98%</div>
+                <div class="stat-label">안전 내용</div>
+              </div>
+            </div>
+            <div class="security-stat alert">
+              <div class="stat-icon"><i class="ri-alarm-warning-line"></i></div>
+              <div class="stat-content">
+                <div class="stat-value">2건</div>
+                <div class="stat-label">민감 내용 감지</div>
+              </div>
+            </div>
+            <div class="security-stat warning">
+              <div class="stat-icon"><i class="ri-error-warning-line"></i></div>
+              <div class="stat-content">
+                <div class="stat-value">1건</div>
+                <div class="stat-label">주의 필요</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 민감 내용 목록 -->
+          <div class="sensitive-content">
+            <h3>감지된 민감 내용</h3>
+            <div class="content-list">
+              <div class="content-item alert-level">
+                <div class="time-badge">10:05</div>
+                <div class="content-body">
+                  <p class="speaker">발언자: 김 팀장</p>
+                  <p class="message">
+                    내용: "...의 신제품 출시 계획은 4월 예정입니다"
+                  </p>
+                  <p class="reason">사유: 대외비 관련 정보</p>
+                </div>
+                <div class="action-badge blocked">차단됨</div>
+              </div>
+
+              <div class="content-item alert-level">
+                <div class="time-badge">10:32</div>
+                <div class="content-body">
+                  <p class="speaker">발언자: 이 대리</p>
+                  <p class="message">
+                    내용: "...클라이언트와의 계약 금액은..."
+                  </p>
+                  <p class="reason">사유: 회사 기밀 사항</p>
+                </div>
+                <div class="action-badge blocked">차단됨</div>
+              </div>
+
+              <div class="content-item warning-level">
+                <div class="time-badge">10:48</div>
+                <div class="content-body">
+                  <p class="speaker">발언자: 박 과장</p>
+                  <p class="message">내용: "...직원 급여 정보에 대해..."</p>
+                  <p class="reason">사유: 개인정보 포함</p>
+                </div>
+                <div class="action-badge warned">주의</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 회의 요약 -->
+        <section class="report-section">
+          <h2>회의 요약</h2>
+          <div class="summary-content">
+            <h3>주요 논의 사항</h3>
+            <ul class="summary-list" id="summaryList">
+              <li>분기 성과 검토 및 평가</li>
+              <li>새로운 마케팅 전략 논의</li>
+              <li>팀원 역할 분배 및 조정</li>
+              <li>예산 편성 및 자원 배분</li>
+              <li>향후 목표 설정 및 계획 수립</li>
+            </ul>
+
+            <h3 style="margin-top: 16px">의사결정 사항</h3>
+            <div class="decision-items" id="decisionList">
+              <div class="decision-item">
+                <span class="decision-icon">✓</span>
+                <p>신규 프로젝트 승인 (예산: 5천만원)</p>
+              </div>
+              <div class="decision-item">
+                <span class="decision-icon">✓</span>
+                <p>마케팅 팀 인원 확충 (2명 추가 배치)</p>
+              </div>
+              <div class="decision-item">
+                <span class="decision-icon">✓</span>
+                <p>분기말 팀 워크숍 개최</p>
+              </div>
+            </div>
+
+            <h3 style="margin-top: 16px">다음 회의</h3>
+            <p id="nextMeeting">
+              2026년 2월 10일 (화) 10:00 - 11:00 / 회의실 A
+            </p>
+          </div>
+        </section>
+
+        <!-- 참가자 명단 -->
+        <section class="report-section">
+          <h2>참가자 명단</h2>
+          <div class="participants-list" id="participantsList">
+            <div class="participant-item">
+              <span class="participant-name">김진영</span>
+              <span class="participant-role">팀장</span>
+              <span class="participant-status">참석</span>
+            </div>
+            <div class="participant-item">
+              <span class="participant-name">이수진</span>
+              <span class="participant-role">대리</span>
+              <span class="participant-status">참석</span>
+            </div>
+            <div class="participant-item">
+              <span class="participant-name">박준호</span>
+              <span class="participant-role">과장</span>
+              <span class="participant-status">참석</span>
+            </div>
+            <div class="participant-item">
+              <span class="participant-name">최소연</span>
+              <span class="participant-role">대리</span>
+              <span class="participant-status">참석</span>
+            </div>
+            <div class="participant-item">
+              <span class="participant-name">정연호</span>
+              <span class="participant-role">사원</span>
+              <span class="participant-status">참석</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 액션 아이템 -->
+        <section class="report-section">
+          <h2>액션 아이템</h2>
+          <div class="action-items" id="actionItems">
+            <div class="action-item">
+              <div class="action-header">
+                <span class="action-id">#1</span>
+                <span class="action-status pending">진행 중</span>
+              </div>
+              <p class="action-task">마케팅 전략안 작성</p>
+              <p class="action-owner">담당자: 이수진</p>
+              <p class="action-deadline">기한: 2026년 2월 9일</p>
+            </div>
+
+            <div class="action-item">
+              <div class="action-header">
+                <span class="action-id">#2</span>
+                <span class="action-status pending">진행 중</span>
+              </div>
+              <p class="action-task">인원 배치안 확정</p>
+              <p class="action-owner">담당자: 김진영</p>
+              <p class="action-deadline">기한: 2026년 2월 5일</p>
+            </div>
+
+            <div class="action-item">
+              <div class="action-header">
+                <span class="action-id">#3</span>
+                <span class="action-status pending">진행 중</span>
+              </div>
+              <p class="action-task">팀 워크숍 일정 예약</p>
+              <p class="action-owner">담당자: 박준호</p>
+              <p class="action-deadline">기한: 2026년 2월 7일</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 보안 권장사항 -->
+        <section class="report-section">
+          <h2>보안 권장사항</h2>
+          <div class="recommendations">
+            <div class="recommendation-item">
+              <div class="rec-icon">💡</div>
+              <div class="rec-content">
+                <h4>민감 정보 사전 공유</h4>
+                <p>
+                  회의 전에 필수 정보를 미리 공유하고, 회의 중에는 개요만
+                  논의하세요.
+                </p>
+              </div>
+            </div>
+
+            <div class="recommendation-item">
+              <div class="rec-icon">💡</div>
+              <div class="rec-content">
+                <h4>보안 교육 강화</h4>
+                <p>
+                  팀원들을 대상으로 정보 보안 및 기밀 유지에 대한 교육을
+                  정기적으로 실시하세요.
+                </p>
+              </div>
+            </div>
+
+            <div class="recommendation-item">
+              <div class="rec-icon">💡</div>
+              <div class="rec-content">
+                <h4>회의 사전 준비</h4>
+                <p>
+                  회의 대본이나 토킹 포인트를 미리 준비하여 민감한 정보 유출을
+                  사전에 방지하세요.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 풋터 -->
+        <footer class="report-footer">
+          <p>본 보고서는 JavaZoom에 의해 자동으로 생성되었습니다.</p>
+          <p>개인정보 취급에 주의하시기 바랍니다.</p>
+        </footer>
+      </div>
+    </div>
+
+    <script src="report.js"></script>
+  </body>
+</html>
